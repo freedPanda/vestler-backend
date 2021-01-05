@@ -38,7 +38,7 @@ class Account{
         //sell.qty is a negative integer
         const balance = await this.getBalance(userid);
         let newBalance = sell.qty * -1 * sell.currentPrice + balance;
-        console.log('depositing ', newBalance);
+        
         const result = await db.query(
             `UPDATE accounts SET balance=$1 
             WHERE user_id=$2

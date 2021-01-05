@@ -89,10 +89,9 @@ class User {
         fs.appendFile(`./profilepics/${data.username}.jpeg`,img,function(err){
             if(err) console.log('filereading',err)
         });
-
-    
+    const userid = await User.getId(result.rows[0].username);
+    await db.query(`INSERT INTO ACCOUNTS (user_id) values ($1)`,[userid]);
     result.rows[0].photo = data.photo;
-        console.log(result.rows[0]);
     return result.rows[0];
   }
 

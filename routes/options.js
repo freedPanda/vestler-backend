@@ -29,41 +29,42 @@ router.get('/all/:username',ensureCorrectUser, async function(req,res,next){
         if(aResult){
             for(let option of aResult){
             
-                //adjusting p_date to prep the date for making a request.
-                let adjusted_p_date = new Date(Number(option.p_date));
-                let day = adjusted_p_date.getDate();
-                day = day - 2;
-                adjusted_p_date.setDate(day);
-                adjusted_p_date =`${adjusted_p_date.getTime()}`
+                let eDate = option.end_date.toString();
+                eDate = eDate.slice(0,10);
+                console.log('end date ', eDate);
+                let sDate = option.p_date.toString();
+                sDate = sDate.slice(0,10);
+                console.log('start date ',sDate);
 
                 //making request
-                let resp = await axios.get('https://finnhub.io/api/v1/stock/candle?symbol=A&resolution=1&from=1608159033&to=1608763860&token=bspkd2vrh5rehfh23ma0');
+                let resp = await axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${option.symbol}&resolution=1&from=${sDate}&to=${eDate}&token=bspkd2vrh5rehfh23ma0`);
                 
                 //acquiring price from c property
                 let result_price = resp.data.c.pop();
                 console.log('result price',result_price);
-                let result = await Option.update({result_price:result_price,id:option.id});
-                if(option.type === 'short' && target > result_price){
+                let result = await Option.update({result_price:Number(result_price),id:option.id});
+                console.log('updated option record', result);
+                if(option.o_type === 'short' && option.target > result_price){
                     //this is a success. deposit to account must be made at twice the amount
-                    if(result){
+                    
                         try{
-                            let re = await Account.depositOption(option.amount * 2, userid);
+                            let re = await Account.depositOption(option.amount, userid);
                             console.log('made deposit because of short option',re);
                         }catch(err){
                             console.log(err);
                         }
-                    }
+                    
                 }
-                if(option.type === 'put' && target < result_price){
+                if(option.o_type === 'put' && option.target < result_price){
                     //this is a success. deposit to account must be made at twice the amount
-                    if(result){
+                    
                         try{
-                            let re = await Account.depositOption(option.amount * 2, userid);
+                            let re = await Account.depositOption(option.amount, userid);
                             console.log('made deposit because of put option',re);
                         }catch(err){
                             console.log(err);
                         }
-                    }
+                    
                 }
             }
         }
@@ -84,7 +85,7 @@ router.post('/put/:symbol/:username',ensureCorrectUser, async function(req,res,n
     //get userid
     const userid = await User.getId(username);
     //get users balance
-    const balance = await Account.getBalance({id:userid});
+    const balance = await Account.getBalance(userid);
     //check user balance against bet placed
     if(balance < option.amount){
         return next({
@@ -95,7 +96,7 @@ router.post('/put/:symbol/:username',ensureCorrectUser, async function(req,res,n
     let resp = await Account.purchase({id:userid,balance:balance,amount:option.amount});
     if(resp){
         const result = await Option.put(userid, option);
-        return res.json({status:201,...result});
+        return res.status(201).json(result);
     }
     return next({status:500});
     
