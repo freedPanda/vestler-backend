@@ -1,5 +1,9 @@
 const db = require('../db');
 
+/**
+ * Accounts table - keeps track of each users balance. 
+ */
+
 class Account{
 
     //get users account balance

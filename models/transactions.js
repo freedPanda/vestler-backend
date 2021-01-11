@@ -1,5 +1,10 @@
 const db = require('../db');
 
+/**
+ * Transactions table - keeps track of all stocks purchased and sold. Does
+ * NOT include options.
+ */
+
 class Transaction{
 
     /** get all investments the user is currently holding*/

@@ -71,8 +71,6 @@ function adminRequired(req, res, next) {
  */
 
 function ensureCorrectUser(req, res, next) {
-  console.log('params', req.params);
-    console.log('body auth asdf',req.query);
   try {
     const tokenStr = req.body._token || req.query._token;
 

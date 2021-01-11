@@ -98,7 +98,7 @@ CREATE TABLE public.transactions(
 CREATE TABLE public.accounts(
     id serial primary key,
     balance float DEFAULT 10000,
-    user_id integer not null references public.stocks
+    user_id integer not null references public.users
 );
 
 CREATE TABLE public.options(

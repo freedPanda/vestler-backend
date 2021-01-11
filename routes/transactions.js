@@ -52,15 +52,6 @@ router.get('/netgains/:username', ensureCorrectUser, async function(req,res,next
     }
 })
 
-//ROUTE FOR GETTING ONE INVESTMENT
-/*router.get(`/investments/:symbol/:username`, ensureCorrectUser, async function(req,res,next){
-    const symbol = req.params.symbol;
-    const username = req.params.symbol;
-    let user_id = await User.getId(username);
-    let investment = await Transaction.getUserInvestment(user_id);
-    return res.json(investment);
-
-})*/
 
 // ROUTE FOR PURCHASING STOCK
 router.post(`/:username/purchase/:symbol`, ensureCorrectUser, async function(req,res,next){
@@ -104,10 +95,8 @@ router.post(`/:username/sell/:symbol`, ensureCorrectUser, async function(req, re
         })
     };
     const userId = await User.getId(username);
-    console.log('selling using userid',userId);
     //verify that the user has that amount of stock to sell at that price
     let quantity = await Transaction.checkQuantity(s,userId);
-    console.log('checking quantity', s.qty * -1, quantity);
     if(s.qty * -1 > quantity){
         return next({
             status:400,

@@ -1,8 +1,12 @@
 const db = require('../db');
 
+/**
+ * Stocks table - keeps track of all the stocks
+ */
 
 class Stock{
 
+    //get all stocks
     static async getAll(){
 
         const result = await db.query(
@@ -14,6 +18,8 @@ class Stock{
         
     }
 
+    //search stocks that have any simularity to the order of the letters held in
+    //search term
     static async search(term){
         const result = await db.query(
             `SELECT * FROM stocks
@@ -24,7 +30,7 @@ class Stock{
 
 
     /**
-     * 
+     * quotes are snapshots of a stock prices
      */
     static async addQuote(data){
         const result = await db.query(

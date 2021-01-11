@@ -1,5 +1,9 @@
 const db = require('../db');
 
+/**
+ * Options table - keeps track of both shorts and puts
+ */
+
 class Option{
 
     //get options that have not expired
@@ -22,6 +26,11 @@ class Option{
     static async getExpiredOptions(userid){
         const d = new Date();
         const cDate = d.getTime();
+        /*let cDate = d.getTime().toString();
+        cDate = cDate.slice(0,10);
+        cDate = Number(cDate);*/
+        console.log('$$$$$ end date',cDate)
+
         try{
             const result = await db.query(
                 `select * from options where user_id=$1 and completed=$2
