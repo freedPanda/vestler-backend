@@ -27,7 +27,7 @@ router.get('/all/:username',ensureCorrectUser, async function(req,res,next){
     try{
         //first check for updates and udpate records
         const aResult = await Option.getExpiredOptions(userid);
-        console.log('expired options', aResult);
+        
         if(aResult){
             for(let option of aResult){
                 //make date objects using end_date and p_date
@@ -36,22 +36,18 @@ router.get('/all/:username',ensureCorrectUser, async function(req,res,next){
                 let eDate = option.end_date.toString();
                 eDate = eDate.slice(0,10);
                 let d = new Date(Number(option.p_date));
-                console.log('date object',d);
+                
                 d.setDate(d.getDate()-2);
-                console.log('adjusted date: ',d);
+                
                 let sDate = d.getTime().toString();
-                console.log('sDate: ',sDate);
+                
                 sDate = sDate.slice(0,10);
-
-                console.log('dates: ',sDate,eDate);
 
                 //making request
                 let resp = await axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${option.symbol}&resolution=1&from=${sDate}&to=${eDate}&token=bspkd2vrh5rehfh23ma0`);
-                console.log('result from finnhub',resp.data);
                 //acquiring price from c property
                 let result_price = resp.data.c.pop();
                 let result = await Option.update({result_price:Number(result_price),id:option.id});
-                console.log('updated option record', result);
                 if(option.o_type === 'short' && option.target > result_price){
                     //this is a success. deposit to account must be made at twice the amount
                     
