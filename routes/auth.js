@@ -9,7 +9,7 @@ const createToken = require("../helpers/createToken");
  * LOGIN ROUTE
  */
 
-router.post("/login", async function(req, res, next) {
+router.post("login", async function(req, res, next) {
   try {
     //authenticate user
     const user = await User.authenticate(req.body);
