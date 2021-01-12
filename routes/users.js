@@ -39,8 +39,6 @@ router.get("/:username", authRequired, async function(req, res, next) {
 /** POST / {userdata}  => {token: token} */
 
 router.post("/", async function(req, res, next) {
-    console.log('user',req.body);
-    console.log('img',req.files);
   try {
     delete req.body._token;
     const validation = validate(req.body, userNewSchema);

@@ -5,7 +5,7 @@ const app = express();
 const cors = require("cors");
 const fileUpload = require('express-fileupload');
 app.use(express.json({limit:'500mb'}));
-app.use(express.urlencoded({limit:'500mb'}))
+//app.use(express.urlencoded({limit:'500mb'}))
 app.use(cors());
 app.use(fileUpload());
 
